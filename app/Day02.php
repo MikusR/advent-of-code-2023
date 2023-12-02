@@ -30,6 +30,7 @@ class Day02
             if (strlen($line) <= 0) {
                 break;
             }
+            $max = ['blue' => 0, 'red' => 0, 'green' => 0];
             $continue = true;
             [$a, $b] = explode(': ', $line);
             $game = str_replace('Game ', '', $a);
@@ -39,14 +40,17 @@ class Day02
 
                 foreach ($colors as $color) {
                     [$x, $y] = explode(' ', $color);
+                    $max[$y] = max($max[$y], $x);
                     if ($$y < $x) {
                         $continue = false;
                     }
                 }
             }
-            if ($continue) {
-                $gameIdSum += $game;
-            }
+            $gameIdSum += array_product($max);
+//            if ($continue) {
+//                var_dump($line, $max);
+
+//            }
         }
         echo $gameIdSum;
     }
