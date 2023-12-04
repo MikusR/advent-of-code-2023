@@ -25,41 +25,38 @@ class Day04
 //Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
 //Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 //Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
-//Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11';
+//Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
+//';
 
         $data = preg_split('/\r\n|\r|\n/', $data);
 //        var_dump($data[0]);
-        $wSum = 0;
+        $wCount = 0;
         foreach ($data as $line) {
             if (strlen($line) < 1) {
                 break;
             }
             [$card, $line] = explode(':', $line);
-            $card = trim(str_replace('Card', ' ', $card));
+            $card = (int)trim(str_replace('Card', ' ', $card));
             [$test[$card]['winners'], $test[$card]['numbers']] = explode('|', $line);
             preg_match_all('(\d+)', $test[$card]['winners'], $winners);
             $test[$card]['winners'] = $winners[0];
             preg_match_all('(\d+)', $test[$card]['numbers'], $numbers);
             $test[$card]['numbers'] = $numbers[0];
-            $wNumbers = array_intersect($test[$card]['winners'], $test[$card]['numbers']);
-            $thisCardSum = 0;
-            if (count($wNumbers) > 0) {
-                $cardSum = 1;
-                $doub = 1;
-                for ($i = 1; $i < count($wNumbers); $i++) {
-                    $cardSum += $doub;
-
-                    $doub *= 2;
-                }
-//                echo "$cardSum|$wSum";
-                $thisCardSum += $cardSum;
-            }
-            $wSum += $thisCardSum;
-
-//            var_dump($wNumbers, $thisCardSum, $wSum);
-//            die;
+            $test[$card]['count'] = 1;
         }
-        var_dump($wSum);
+        foreach ($test as $key => $card) {
+            $wNumbers = array_intersect($card['winners'], $card['numbers']);
+
+            if (count($wNumbers) > 0) {
+                for ($i = 1; $i <= count($wNumbers); $i++) {
+                    $test[$key + $i]['count'] += $test[$key]['count'];
+                }
+            }
+        }
+        foreach ($test as $card) {
+            $wCount += $card['count'];
+        }
+        var_dump($wCount);
     }
 
 }
