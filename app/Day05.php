@@ -80,23 +80,15 @@ humidity-to-location map:
                 }
             }
         }
-//        foreach ($seeds as $key => $seed) {
-//            if ($key % 2 === 0) {
-//                for ($i = 0; $i < $seeds[$key + 1]; $i++) {
-//                }
-//            }
-//        }
-        var_dump(opcache_get_status()['jit']);
         $minimum = false;
-		
+
         foreach ($seeds as $key => $seed) {
-			var_dump('seed:',$seed);
+            var_dump('seed:', $seed);
             if ($key % 2 === 0) {
-                
                 for ($i = 0; $i < $seeds[$key + 1]; $i++) {
-                    $destination = $seed+$i;
+                    $destination = $seed + $i;
                     $dest = $destination;
-					//var_dump('seed:',$destination);
+                    //var_dump('seed:',$destination);
                     foreach ($almanac as $item) {
                         foreach ($item as $line) {
                             if (($destination >= $line['source']) &&
@@ -105,7 +97,6 @@ humidity-to-location map:
                             }
                         }
                         $destination = $dest;
-//
                     }
                     if ($minimum === false) {
                         $minimum = $destination;
