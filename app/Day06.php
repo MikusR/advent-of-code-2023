@@ -27,7 +27,8 @@ Distance:  9  40  200
 //        var_dump($data);
         $temp[0] = explode('Time:', $data[0]);
         $temp[1] = explode('Distance:', $data[1]);
-
+        $temp[0][1] = str_replace(' ', '', $temp[0][1]);
+        $temp[1][1] = str_replace(' ', '', $temp[1][1]);
         preg_match_all('(\d+)', $temp[0][1], $matches[0]);
         preg_match_all('(\d+)', $temp[1][1], $matches[1]);
         foreach ($matches[0][0] as $key => $match) {
