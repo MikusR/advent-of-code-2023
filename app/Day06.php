@@ -16,7 +16,7 @@ class Day06
         $jar = CookieJar::fromArray([
             'session' => $_ENV['AOC_COOKIE']
         ], 'adventofcode.com');
-        $response = $client->request('GET', 'https://adventofcode.com/2023/day/5/input', ['cookies' => $jar]);
+        $response = $client->request('GET', 'https://adventofcode.com/2023/day/6/input', ['cookies' => $jar]);
         echo '<pre>';
         $data = (string)$response->getBody();
         var_dump($data);
