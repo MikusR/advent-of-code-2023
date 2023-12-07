@@ -30,7 +30,7 @@ QQQJA 483
             'A' => 99,
             'K' => 88,
             'Q' => 77,
-            'J' => 66,
+
             'T' => 55,
             '9' => 44,
             '8' => 33,
@@ -39,7 +39,7 @@ QQQJA 483
             '5' => 20,
             '4' => 19,
             '3' => 15,
-            '2' => 10
+            '2' => 12
         ];
         $types = [
             'Five of a kind' => 7,
@@ -55,35 +55,22 @@ QQQJA 483
             if (strlen($line) > 0) {
                 [$hand, $bid] = explode(' ', $line);
                 $hand = str_split($hand);
-                $unique = array_count_values($hand);
-                arsort($unique);
-                $type = 'High card';
-//                $type = $unique;
-                if (count($unique) === 1) {
-                    $type = 'Five of a kind';
-                }
-                if (count($unique) === 2) {
-                    if ($unique[array_key_first($unique)] === 4) {
-                        $type = 'Four of a kind';
+                if (in_array('J', $hand)) {
+                    $type = $this->getType($hand);
+                    foreach ($cards as $card => $value) {
+                        $newHand = str_replace('J', (string)$card, implode($hand));
+                        $newHand = str_split($newHand);
+                        $newType = $this->getType($newHand);
+                        if ($types[$type] < $types[$newType]) {
+                            $type = $newType;
+                        }
                     }
-                    if ($unique[array_key_first($unique)] === 3) {
-                        $type = 'Full house';
-                    }
-                }
-                if (count($unique) === 3) {
-                    if ($unique[array_key_first($unique)] === 3) {
-                        $type = 'Three of a kind';
-                    }
-                    if ($unique[array_key_first($unique)] === 2) {
-                        $type = 'Two pair';
-                    }
-                }
-                if (count($unique) === 4) {
-                    $type = 'One pair';
+                } else {
+                    $type = $this->getType($hand);
                 }
                 $sortOrder = '';
                 $sortOrder .= $types[$type];
-
+                $cards['J'] = 10;
                 foreach ($hand as $card) {
                     $sortOrder .= $cards[$card];
                 }
@@ -100,5 +87,36 @@ QQQJA 483
         }
         var_dump($list);
         var_dump('Sum: ', $sum);
+    }
+
+    public function getType(array $hand): string
+    {
+        $unique = array_count_values($hand);
+        arsort($unique);
+        $type = 'High card';
+//                $type = $unique;
+        if (count($unique) === 1) {
+            $type = 'Five of a kind';
+        }
+        if (count($unique) === 2) {
+            if ($unique[array_key_first($unique)] === 4) {
+                $type = 'Four of a kind';
+            }
+            if ($unique[array_key_first($unique)] === 3) {
+                $type = 'Full house';
+            }
+        }
+        if (count($unique) === 3) {
+            if ($unique[array_key_first($unique)] === 3) {
+                $type = 'Three of a kind';
+            }
+            if ($unique[array_key_first($unique)] === 2) {
+                $type = 'Two pair';
+            }
+        }
+        if (count($unique) === 4) {
+            $type = 'One pair';
+        }
+        return $type;
     }
 }
