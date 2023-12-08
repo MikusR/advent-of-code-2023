@@ -40,16 +40,32 @@ XXX = (XXX, XXX)
                 $map[$matches[1]] = ['L' => $matches[2], 'R' => $matches[3]];
             }
         }
-        $location = 'AAA';
+        foreach ($map as $key => $item) {
+            if (substr($key, 2, 1) === 'A') {
+                $startLocation[] = $key;
+            }
+            if (substr($key, 2, 1) === 'Z') {
+                $targetLocation[] = $key;
+            }
+        }
+//
+        $location = $startLocation;
         $numberOfSteps = 0;
         $step = 0;
         $length = count($path);
-        while ($location != 'ZZZ') {
+        $found = false;
+        while ($found === false) {
             $numberOfSteps++;
             $nextStep = $path[$step];
-            $nextLocation = $map[$location][$nextStep];
-//            var_dump($nextLocation, $location, $path[$step]);
-            $location = $nextLocation;
+            foreach ($location as $key => $loc) {
+                $location[$key] = $map[$loc][$nextStep];
+            }
+//            var_dump($location);
+            if (count(
+                    array_diff($location, $targetLocation)
+                ) === 0) {
+                $found = true;
+            }
 
             if ($length - 1 <= $step) {
                 $step = 0;
