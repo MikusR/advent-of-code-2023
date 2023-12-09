@@ -66,12 +66,24 @@ class Day09
                 $interpol[$interpolLine][$key] = $newEntry;
             }
         }
+
+        foreach ($interpol as $interpolLine => $line) {
+            $newElement = 0;
+            $newLine = [];
+            foreach ($line as $key => $entry) {
+                $newEntry = $entry;
+                $newElement = $entry[0] - $newElement;
+                array_unshift($newEntry, $newElement);
+                $interpol[$interpolLine][$key] = $newEntry;
+            }
+        }
+
         foreach ($interpol as $interpolLine => $item) {
             $interpol[$interpolLine] = array_reverse($item);
         }
         $lastElementSum = 0;
         foreach ($interpol as $line) {
-            $lastElementSum += $line[0][array_key_last($line[0])];
+            $lastElementSum += $line[0][0];
             foreach ($line as $entry) {
                 echo implode(' ', $entry) . "\n";
             }
