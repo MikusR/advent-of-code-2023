@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Day10;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-
+echo '<pre>';
 var_dump(opcache_get_status()['jit']);
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
