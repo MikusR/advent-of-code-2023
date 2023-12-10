@@ -122,20 +122,16 @@ L7JLJL-JLJLJL--JLJ.L
                 $next[] = ['Y' => $neighbor['Y'], 'X' => $neighbor['X']];
             }
         }
-//        var_dump($next);
+
 
         $currentLocation = $S;
-//        var_dump($S);
-//        var_dump($next);
+
         $nextLocation = $next[0];
         $steps = 0;
         $path = [];
-//        var_dump($map[0]);
+
 
         while (true) {
-//            var_dump("current", $currentLocation);
-//            var_dump("next", $nextLocation);
-
             $currentValue = $map[$currentLocation['Y']][$currentLocation['X']]['value'];
             $path[$currentLocation['Y']] [$currentLocation['X']] = $steps;
             $nextValue = $map[$nextLocation['Y']][$nextLocation['X']]['value'];
@@ -148,32 +144,21 @@ L7JLJL-JLJLJL--JLJ.L
                 break;
             }
             $nextLocation = $map[$Y][$X][$from];
-//            var_dump("current", $currentLocation);
-//            var_dump("next", $nextLocation);
-
-
-//            break;
         }
-//        var_dump($path);
+
         $tiles = 0;
         foreach ($map as $line) {
-//            var_dump($line);
             foreach ($line as $item) {
                 $x = $item['X'];
                 $y = $item['Y'];
-//                $x = 0;
-//                $y = 3;
+
                 $stepCount = $path[$y][$x] ?? false;
                 $isOnPath = (bool)$stepCount;
                 if ($isOnPath) {
                     echo "<strong>{$item['value']}</strong>";
                 } else {
-                    $p = '';
-                    $rlue = '';
                     $crossings = 0;
                     for ($i = $x + 1; $i < count($line); $i++) {
-                        $rlue = $map[$y][$i]['value'];
-                        $p .= $rlue;
                         $stepCount = $path[$y][$i] ?? false;
                         $isOnPath = (bool)$stepCount;
                         if ($stepCount === 0) {
@@ -200,7 +185,7 @@ L7JLJL-JLJLJL--JLJ.L
             }
             echo "\n";
         }
-//        var_dump($path);
+
         var_dump($tiles);
     }
 }
