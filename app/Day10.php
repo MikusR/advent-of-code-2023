@@ -18,11 +18,16 @@ class Day10
         ], 'adventofcode.com');
         $response = $client->request('GET', 'https://adventofcode.com/2023/day/10/input', ['cookies' => $jar]);
         $data = (string)$response->getBody();
-        $data2 = '..F7.
-.FJ|.
-SJ.L7
-|F--J
-LJ...
+        $data2 = 'FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L
 ';
 //        echo $data;
         $map = [];
@@ -39,52 +44,64 @@ LJ...
                 switch ($value) {
                     case 'S':
                         $S = ['X' => $x, 'Y' => $y];
-                        $map[$y][$x] = ['value' => $map[$y][$x]];
+                        $map[$y][$x] = ['value' => $map[$y][$x], 'X' => $x, 'Y' => $y];
                         break;
                     case '|':
                         $map[$y][$x] = [
                             'value' => $map[$y][$x],
                             $y - 1 . $x => ['Y' => $y + 1, 'X' => $x],
-                            $y + 1 . $x => ['Y' => $y - 1, 'X' => $x]
+                            $y + 1 . $x => ['Y' => $y - 1, 'X' => $x],
+                            'X' => $x,
+                            'Y' => $y
                         ];
                         break;
                     case '-':
                         $map[$y][$x] = [
                             'value' => $map[$y][$x],
                             $y . $x - 1 => ['Y' => $y, 'X' => $x + 1],
-                            $y . $x + 1 => ['Y' => $y, 'X' => $x - 1]
+                            $y . $x + 1 => ['Y' => $y, 'X' => $x - 1],
+                            'X' => $x,
+                            'Y' => $y
                         ];
                         break;
                     case 'L':
                         $map[$y][$x] = [
                             'value' => $map[$y][$x],
                             $y - 1 . $x => ['Y' => $y, 'X' => $x + 1],
-                            $y . $x + 1 => ['Y' => $y - 1, 'X' => $x]
+                            $y . $x + 1 => ['Y' => $y - 1, 'X' => $x],
+                            'X' => $x,
+                            'Y' => $y
                         ];
                         break;
                     case 'J':
                         $map[$y][$x] = [
                             'value' => $map[$y][$x],
                             $y - 1 . $x => ['Y' => $y, 'X' => $x - 1],
-                            $y . $x - 1 => ['Y' => $y - 1, 'X' => $x]
+                            $y . $x - 1 => ['Y' => $y - 1, 'X' => $x],
+                            'X' => $x,
+                            'Y' => $y
                         ];
                         break;
                     case '7':
                         $map[$y][$x] = [
                             'value' => $map[$y][$x],
                             $y . $x - 1 => ['Y' => $y + 1, 'X' => $x],
-                            $y + 1 . $x => ['Y' => $y, 'X' => $x - 1]
+                            $y + 1 . $x => ['Y' => $y, 'X' => $x - 1],
+                            'X' => $x,
+                            'Y' => $y
                         ];
                         break;
                     case 'F':
                         $map[$y][$x] = [
                             'value' => $map[$y][$x],
                             $y . $x + 1 => ['Y' => $y + 1, 'X' => $x],
-                            $y + 1 . $x => ['Y' => $y, 'X' => $x + 1]
+                            $y + 1 . $x => ['Y' => $y, 'X' => $x + 1],
+                            'X' => $x,
+                            'Y' => $y
                         ];
                         break;
                     default:
-                        $map[$y][$x] = ['value' => $map[$y][$x]];
+                        $map[$y][$x] = ['value' => $map[$y][$x], 'X' => $x, 'Y' => $y];
                         break;
                 }
             }
@@ -112,7 +129,7 @@ LJ...
 //        var_dump($next);
         $nextLocation = $next[0];
         $steps = 0;
-        $path = '';
+        $path = [];
 //        var_dump($map[0]);
 
         while (true) {
@@ -120,7 +137,7 @@ LJ...
 //            var_dump("next", $nextLocation);
 
             $currentValue = $map[$currentLocation['Y']][$currentLocation['X']]['value'];
-            $path .= $currentValue;
+            $path[$currentLocation['Y']] [$currentLocation['X']] = $steps;
             $nextValue = $map[$nextLocation['Y']][$nextLocation['X']]['value'];
             $steps++;
             $from = $currentLocation['Y'] . $currentLocation['X'];
@@ -137,6 +154,53 @@ LJ...
 
 //            break;
         }
-        var_dump($steps / 2);
+//        var_dump($path);
+        $tiles = 0;
+        foreach ($map as $line) {
+//            var_dump($line);
+            foreach ($line as $item) {
+                $x = $item['X'];
+                $y = $item['Y'];
+//                $x = 0;
+//                $y = 3;
+                $stepCount = $path[$y][$x] ?? false;
+                $isOnPath = (bool)$stepCount;
+                if ($isOnPath) {
+                    echo "<strong>{$item['value']}</strong>";
+                } else {
+                    $p = '';
+                    $rlue = '';
+                    $crossings = 0;
+                    for ($i = $x + 1; $i < count($line); $i++) {
+                        $rlue = $map[$y][$i]['value'];
+                        $p .= $rlue;
+                        $stepCount = $path[$y][$i] ?? false;
+                        $isOnPath = (bool)$stepCount;
+                        if ($stepCount === 0) {
+                            $isOnPath = true;
+                        }
+
+                        $stepCountBelow = $path[$y + 1][$i] ?? false;
+                        $belowOnPath = (bool)$stepCountBelow;
+                        if ($isOnPath && $belowOnPath) {
+                            if (abs($stepCount - $stepCountBelow) === 1) {
+                                $crossings += $stepCount - $stepCountBelow;
+                            }
+                        }
+                    }
+
+
+                    if ($crossings != 0) {
+                        echo "<strong style=\"color:red;\">{$item['value']}</strong>";
+                        $tiles++;
+                    } else {
+                        echo "{$item['value']}";
+                    }
+                }
+            }
+            echo "\n";
+        }
+//        var_dump($path);
+        var_dump($tiles);
     }
 }
